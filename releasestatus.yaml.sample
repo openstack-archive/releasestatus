@@ -1,0 +1,24 @@
+# Name of the series
+series: grizzly
+
+# Final release date
+releasedate: 2013-04-04
+
+# Short milestone codes, with number of weeks leading to them
+# The last one should be the release date
+milestones:
+ - [5, g1]
+ - [6, g2]
+ - [5, g3]
+ - [5, Apr 4]
+
+# Set of projects to consider in the report
+products:
+ - nova
+ - glance
+ - swift
+ - keystone
+ - horizon
+ - quantum
+ - cinder
+ - oslo

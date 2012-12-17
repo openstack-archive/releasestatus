@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <base href=".">
+  <title>{{ series|capitalize }} release status</title>
+  <link rel="shortcut icon"
+    href="https://blueprints.launchpad.net/@@/launchpad.png">
+  <link type="text/css" rel="stylesheet" media="screen,print" href="combo.css">
+  <script type="text/javascript" src="sorting.js"></script>
+  <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+  <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['gauge']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Label');
+        data.addColumn('number', 'Value');
+        data.addRows(1);
+        data.setValue(0, 0, '');
+        data.setValue(0, 1, {{ gaugedata.progress }});
+        var chart = new google.visualization.Gauge(
+          document.getElementById('chart_div'));
+        var options = {width: 140, height: 140,
+            greenFrom: {{ gaugedata.green }}, greenTo: {{ gaugedata.yellow }},
+            yellowFrom: {{ gaugedata.yellow }}, yellowTo: {{ gaugedata.red }},
+            redFrom: {{ gaugedata.red }}, redTo: {{ gaugedata.end }},
+            majorTicks: [ {{ gaugedata.ticks }} ],
+            minorTicks: 0, max: {{ gaugedata.end}} };
+        chart.draw(data, options);
+      }
+  </script>
+</head>
+
+<body id="document" class="tab-specifications">
+  <div class="yui-d0">
+    <div class="flowed-block">
+       <div id='chart_div'></div>
+    </div>
+    <div class="flowed-block wide">
+      <h1>OpenStack blueprints for {{ series }}</h1><p>&nbsp</p>
+      <a href="http://wiki.openstack.org/{{ series|capitalize }}ReleaseSchedule">Release
+         Schedule</a><br>
+      <a href="http://wiki.openstack.org/ReleaseCycle">Release
+         Cycle</a><br>&nbsp;<br>
+      <ol class="breadcrumbs">
+        <li>Page refreshed at {{ date }} UTC </li>
+        <li>{{ activebps|length + pastbps|length }} total blueprints </li>
+        <li>{{ activebps|length }} active blueprints</li>
+      </ol>
+      <ol class="breadcrumbs">
+        <li><img src=bmpNEEDSREVIEW.png> Proposed change (needs review) </li>
+        <li><img src=bmpWORKINPROGRESS.png> Submitted change </li>
+        <li><img src=bmpMERGED.png> Merged change</li>
+      </ol>
+    </div>
+    <table class="listing sortable" id="speclisting">
+      <thead>
+        <tr>
+          <th><a href="#" class="sortheader" id="sortprio"
+            onclick="ts_resortTable(this); return false;">Priority<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Project<img
+            class="sortarrow" src="arrowDown" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader" id="sortmilestone"
+            onclick="ts_resortTable(this); return false;">Milestone<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Blueprint<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader" id="sortdelivery"
+            onclick="ts_resortTable(this); return false;">Delivery<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Assignee<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+        </tr>
+      </thead>
+      <tbody>
+{% macro render_bp(bp) -%}
+        <tr>
+          <td>
+            <span class="sortkey">{{ bp.priorityindex }}</span>
+            <span class="specpriority{{ bp.priority|upper }}">{{ bp.priority }}</span>
+          </td>
+          <td>
+            <a href="https://blueprints.launchpad.net/{{bp.pname}}/{{series}}">{{bp.pname}}</a>
+          </td>
+          <td>
+            <span class="sortkey">{{bp.milestonedate}}</span>
+            <a href="{{bp.milestonelink}}">{{bp.milestonename}}</a>
+          </td>
+          <td>
+            <a href="https://blueprints.launchpad.net/{{bp.pname}}/+spec/{{bp.name}}">{{bp.name}}</a>
+          </td>
+          <td>
+            <span class="sortkey">{{bp.implementationindex}}</span>
+            <span class="specdelivery{{bp.implementation|replace(' ','')|upper}}">{{bp.implementation}}</span>
+{% for review in bp.reviews %}
+<a href="{{review.url}}" title="{{review.subject}}"><img src="bmp{{review.image}}.png"></a>
+{% endfor %}
+{% if bp.impl_error %}<img src="error.png" title="%s-{{bp.impl_error}}">
+{% endif %}
+{% if bp.impl_warn %}<img src="alert.png" title="%s-{{bp.impl_warn}}">
+{% endif %}
+          </td>
+          <td>
+            <span><a href="https://launchpad.net/~{{bp.assigneename}}">{{bp.assigneedisplay}}</a>
+{% if bp.assignee_error %}<img src="error.png" title="{{bp.assignee_error}}-">
+{% endif %}
+{% if bp.assignee_warn %}<img src="alert.png" title="{{bp.assignee_warn}}-">
+{% endif %}
+</span>
+          </td>
+        </tr>
+{%- endmacro %}
+{% for bp in activebps %}{{ render_bp(bp) }}{% endfor %}
+      </tbody>
+   </table>
+   <script type="text/javascript">
+    // Sort by default by priority, then delivery
+    ts_resortTable(document.getElementById("sortdelivery"))
+    ts_resortTable(document.getElementById("sortprio"))
+    ts_resortTable(document.getElementById("sortmilestone"))
+   </script>
+    <div class="flowed-block wide">
+      <p>&nbsp</p>
+      <h2>Past milestones</h2>
+      <ol class="breadcrumbs">
+        <li>{{ pastbps|length }} completed blueprints</li>
+      </ol>
+    </div>
+    <table class="listing sortable" id="speclisting">
+      <thead>
+        <tr>
+          <th><a href="#" class="sortheader" id="sortBprio"
+            onclick="ts_resortTable(this); return false;">Priority<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Project<img
+            class="sortarrow" src="arrowDown" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader" id="sortBmilestone"
+            onclick="ts_resortTable(this); return false;">Milestone<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Blueprint<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader" id="sortBdelivery"
+            onclick="ts_resortTable(this); return false;">Delivery<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+          <th><a href="#" class="sortheader"
+            onclick="ts_resortTable(this); return false;">Assignee<img
+            class="sortarrow" src="arrowBlank" height="6" width="9"></a></th>
+        </tr>
+      </thead>
+      <tbody>
+{% for bp in pastbps %}{{ render_bp(bp) }}{% endfor %}
+      </tbody>
+   </table>
+   <script type="text/javascript">
+    // Sort by default by priority, then delivery
+    ts_resortTable(document.getElementById("sortBdelivery"))
+    ts_resortTable(document.getElementById("sortBprio"))
+    ts_resortTable(document.getElementById("sortBmilestone"))
+   </script>
+</body></html>
