@@ -7,7 +7,14 @@
   <title>{{ series|capitalize }} release status</title>
   <link rel="shortcut icon"
     href="https://blueprints.launchpad.net/@@/launchpad.png">
+    <script type="text/javascript"
+            src="http://status.openstack.org/common.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans&amp;subset=latin' rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="http://www.openstack.org/themes/openstack/css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="http://www.openstack.org/themes/openstack/css/blueprint/print.css" type="text/css" media="print"/>
+    <link rel="stylesheet" type="text/css" href="http://www.openstack.org/themes/openstack/css/main.css" />
   <link type="text/css" rel="stylesheet" media="screen,print" href="combo.css">
+ 
   <script type="text/javascript" src="sorting.js"></script>
   <script type='text/javascript' src='https://www.google.com/jsapi'></script>
   <script type='text/javascript'>
@@ -33,12 +40,10 @@
   </script>
 </head>
 
-<body id="document" class="tab-specifications">
-  <div class="yui-d0">
-    <div class="flowed-block">
-       <div id='chart_div'></div>
-    </div>
-    <div class="flowed-block wide">
+<body id="document">
+  <div class="container">
+    <script type="text/javascript">header('Release');</script>
+    <div class="span-20">
       <h1>OpenStack blueprints for {{ series }}</h1><p>&nbsp</p>
       <a href="http://wiki.openstack.org/{{ series|capitalize }}ReleaseSchedule">Release
          Schedule</a><br>
@@ -55,6 +60,11 @@
         <li><img src=bmpMERGED.png> Merged change</li>
       </ol>
     </div>
+    <div class="span-4 last">
+       <div id='chart_div'></div>
+    </div>
+    </div>
+    <div class=container>
     <table class="listing sortable" id="speclisting">
       <thead>
         <tr>
@@ -125,6 +135,7 @@
     ts_resortTable(document.getElementById("sortprio"))
     ts_resortTable(document.getElementById("sortmilestone"))
    </script>
+   </div>
     <div class="flowed-block wide">
       <p>&nbsp</p>
       <h2>Past milestones</h2>
@@ -165,4 +176,5 @@
     ts_resortTable(document.getElementById("sortBprio"))
     ts_resortTable(document.getElementById("sortBmilestone"))
    </script>
+   <script type="text/javascript">footer();</script>
 </body></html>
