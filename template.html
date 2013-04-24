@@ -94,6 +94,7 @@
           <td>
             <span class="sortkey">{{ bp.priorityindex }}</span>
             <span class="specpriority{{ bp.priority|upper }}">{{ bp.priority }}</span>
+{% if bp.priority == 'Undefined' %}<img src="error.png" title="Priority for blueprint should be defined">{% endif %}
           </td>
           <td>
             <a href="https://blueprints.launchpad.net/{{bp.pname}}/{{series}}">{{bp.pname}}</a>
@@ -101,6 +102,7 @@
           <td>
             <span class="sortkey">{{bp.milestonedate}}</span>
             <a href="{{bp.milestonelink}}">{{bp.milestonename}}</a>
+{% if not bp.milestonename %}&nbsp;<img src="alert.png" title="Milestone target should be set">{% endif %}
           </td>
           <td>
             <a href="https://blueprints.launchpad.net/{{bp.pname}}/+spec/{{bp.name}}">{{bp.name}}</a>
