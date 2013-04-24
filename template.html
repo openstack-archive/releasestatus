@@ -113,9 +113,9 @@
 {% for review in bp.reviews %}
 <a href="{{review.url}}" title="{{review.subject}}"><img src="bmp{{review.image}}.png"></a>
 {% endfor %}
-{% if bp.impl_error %}<img src="error.png" title="%s-{{bp.impl_error}}">
+{% if bp.impl_error %}<img src="error.png" title="{{bp.impl_error}}-">
 {% endif %}
-{% if bp.impl_warn %}<img src="alert.png" title="%s-{{bp.impl_warn}}">
+{% if bp.impl_warn %}<img src="alert.png" title="{{bp.impl_warn}}-">
 {% endif %}
           </td>
           <td>
