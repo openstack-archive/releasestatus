@@ -100,7 +100,11 @@ class ExtendedBlueprint():
                 self.assigneedisplay = ''
             else:
                 self.assigneename = self.drafter.name
-                self.assigneedisplay = '<i>%s</i>' % self.drafter.display_name
+                try:
+                    self.assigneedisplay = str(self.drafter.display_name)
+                except UnicodeEncodeError:
+                    self.assigneedisplay = self.drafter.name
+                self.assigneedisplay = '<i>%s</i>' % self.assigneedisplay
         else:
             self.assigneename = self.assignee.name
             try:
