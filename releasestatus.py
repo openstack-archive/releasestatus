@@ -36,10 +36,8 @@ class GerritReviews():
         age = '2mon'
         host = "review.openstack.org"
         port = "29418"
-        username = "releasestatus"
-        keyfile = os.getenv('HOME') + "/.gerritssh/id_rsa"
 
-        base_cmd = ['/usr/bin/ssh', '-p', port, '-i', keyfile, '-l', username,
+        base_cmd = ['/usr/bin/ssh', '-p', port,
                     host, 'gerrit', 'query', '--format=JSON',
                     'branch:master', 'AND', 'NOT', 'age:%s' % age]
 
