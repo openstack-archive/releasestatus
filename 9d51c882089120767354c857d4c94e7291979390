@@ -1,0 +1,8 @@
+Verified+2: Jenkins
+Approved+1: Thierry Carrez <thierry@openstack.org>
+Code-Review+2: Thierry Carrez <thierry@openstack.org>
+Submitted-by: Jenkins
+Submitted-at: Wed, 29 May 2013 13:54:17 +0000
+Reviewed-on: https://review.openstack.org/30882
+Project: openstack-infra/releasestatus
+Branch: refs/heads/master
