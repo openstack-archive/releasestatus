@@ -44,7 +44,7 @@
   <script type="text/javascript">header('Release');</script>
   <div class="container">
     <div class="span-20">
-      <h1>OpenStack blueprints for {{ series }}</h1><p>&nbsp</p>
+      <h1>OpenStack roadmap for {{ series }}</h1>
       <a href="https://wiki.openstack.org/wiki/{{ series|capitalize }}_Release_Schedule">Release
          Schedule</a><br>
       <a href="https://wiki.openstack.org/wiki/Release_Cycle">Release
@@ -52,11 +52,15 @@
       <ol class="breadcrumbs">
         <li>Page refreshed at {{ date }} UTC </li>
         <li>{{ activebps|length + pastbps|length }} total blueprints </li>
-        <li>{{ activebps|length }} active blueprints</li>
+        <li><b>{{ activebps|length }} tracked active blueprints</b></li>
       </ol>
       <ol class="breadcrumbs">
+        <li>Note </li>
+        <li>We only track active blueprints where priority is Medium, High or Essential (release radar)</li>
+      </ol>
+      <ol class="breadcrumbs">
+        <li>Key </li>
         <li><img src=bmpNEEDSREVIEW.png> Proposed change (needs review) </li>
-        <li><img src=bmpWORKINPROGRESS.png> Submitted change </li>
         <li><img src=bmpMERGED.png> Merged change</li>
       </ol>
     </div>
@@ -138,13 +142,12 @@
     ts_resortTable(document.getElementById("sortmilestone"))
    </script>
    </div>
-    <div class="flowed-block wide">
+    <div class="container">
       <p>&nbsp</p>
       <h2>Past milestones</h2>
       <ol class="breadcrumbs">
         <li>{{ pastbps|length }} completed blueprints</li>
       </ol>
-    </div>
     <table class="listing sortable" id="speclisting">
       <thead>
         <tr>
@@ -178,5 +181,6 @@
     ts_resortTable(document.getElementById("sortBprio"))
     ts_resortTable(document.getElementById("sortBmilestone"))
    </script>
+    </div>
    <script type="text/javascript">footer();</script>
 </body></html>
