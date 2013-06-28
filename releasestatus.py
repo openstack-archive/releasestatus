@@ -226,10 +226,13 @@ if __name__ == '__main__':
     for p in config['products']:
         for bp in lp.projects[p].getSeries(
                   name=config['series']).valid_specifications:
-            if bp.milestone and not bp.milestone.is_active:
-                pastbps.add(bp)
-            else:
-                activebps.add(bp)
+            if bp.milestone:
+                if not bp.milestone.is_active:
+                    pastbps.add(bp)
+                else:
+                    if (bp.implementation_status == 'Implemented' or
+                        bp.priority not in ('Undefined', 'Low')):
+                        activebps.add(bp)
 
     print template.render(series=config['series'],
                           gaugedata=gaugedata,
