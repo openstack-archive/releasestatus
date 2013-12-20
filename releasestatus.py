@@ -65,7 +65,7 @@ class BlueprintReview():
 
 
 class ExtendedBlueprint():
-    priorities = ('Essential', 'High', 'Medium', 'Low', 'Undefined')
+    priorities = ('Essential', 'High', 'Medium', 'Low', 'Undefined', 'Not')
 
     implementations = ('Implemented', 'Deployment', 'Needs Code Review',
                        'Beta Available', 'Good progress', 'Slow progress',
