@@ -231,7 +231,7 @@ if __name__ == '__main__':
                     pastbps.add(bp)
                 else:
                     if (bp.implementation_status == 'Implemented' or
-                        bp.priority not in ('Undefined', 'Low')):
+                        bp.priority not in ('Undefined', 'Not')):
                         activebps.add(bp)
 
     print template.render(series=config['series'],
