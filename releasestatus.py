@@ -201,7 +201,7 @@ class CycleGaugeData(object):
 if __name__ == '__main__':
 
     template_dir = os.path.dirname(sys.argv[0])
-    if len(sys.argv) < 1:
+    if len(sys.argv) < 2:
         print >> sys.stderr, "Usage: %s config.yaml" % sys.argv[0]
         sys.exit(1)
 
