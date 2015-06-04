@@ -62,28 +62,13 @@
     <br/>
     <ul class="breadcrumbs">
      <li>
-      Page refreshed at {{ date }} UTC
-     </li>
-     <li>
-      {{ activebps|length + pastbps|length }} total blueprints
-     </li>
-     <li>
-      <b>
-       {{ activebps|length }} tracked active blueprints
-      </b>
+      To appear in this page, blueprints must have their
+      <i>Series goal</i> set to {{ series }}
      </li>
     </ul>
     <ul class="breadcrumbs">
      <li>
-      Key
-     </li>
-     <li>
-      <img src="bmpNEEDSREVIEW.png"/>
-      Proposed change (needs review)
-     </li>
-     <li>
-      <img src="bmpMERGED.png"/>
-      Merged change
+      Page refreshed at {{ date }} UTC
      </li>
     </ul>
    </div>
@@ -93,6 +78,14 @@
    </div>
   </div>
   <div class="container">
+   <h2>
+    Completed features
+   </h2>
+   <ul class="breadcrumbs">
+    <li>
+     {{ pastbps|length }} completed blueprints
+    </li>
+   </ul>
    <table class="listing sortable" id="speclisting">
     <thead>
      <tr>
@@ -103,7 +96,7 @@
        </a>
       </th>
       <th>
-       <a class="sortheader" href="#" onclick="ts_resortTable(this); return false;">
+       <a class="sortheader" href="#" id="sortproject" onclick="ts_resortTable(this); return false;">
         Project
         <img class="sortarrow" height="6" src="arrowDown" width="9"/>
        </a>
@@ -117,12 +110,6 @@
       <th>
        <a class="sortheader" href="#" onclick="ts_resortTable(this); return false;">
         Blueprint
-        <img class="sortarrow" height="6" src="arrowBlank" width="9"/>
-       </a>
-      </th>
-      <th>
-       <a class="sortheader" href="#" id="sortdelivery" onclick="ts_resortTable(this); return false;">
-        Delivery
         <img class="sortarrow" height="6" src="arrowBlank" width="9"/>
        </a>
       </th>
@@ -145,7 +132,7 @@
         {{ bp.priority }}
        </span>
 {% if bp.priority == 'Undefined' %}
-       <img src="error.png" title="Priority for blueprint should be defined"/>
+       <img src="alert.png" title="Priority for blueprint should be defined"/>
 {% endif %}
       </td>
       <td>
@@ -160,15 +147,13 @@
        <a href="{{bp.milestonelink}}">
         {{bp.milestonename}}
        </a>
-{% if not bp.milestonename %}
-       <img src="alert.png" title="Milestone target should be set"/>
-{% endif %}
       </td>
       <td>
        <a href="https://blueprints.launchpad.net/{{bp.pname}}/+spec/{{bp.name}}">
         {{bp.name}}
        </a>
       </td>
+{% if bp.implementation != 'Implemented' %}
       <td>
        <span class="sortkey">
         {{bp.implementationindex}}
@@ -188,6 +173,7 @@
        <img src="alert.png" title="{{bp.impl_warn}}-"/>
 {% endif %}
       </td>
+{% endif %}
       <td>
        <span>
         <a href="https://launchpad.net/~{{bp.assigneename}}">
@@ -203,14 +189,14 @@
       </td>
      </tr>
 {%- endmacro %}
-{% for bp in activebps %}{{ render_bp(bp) }}{% endfor %}
+     {% for bp in pastbps %}{{ render_bp(bp) }}{% endfor %}
     </tbody>
    </table>
    <script type="text/javascript">
-    // Sort by default by priority, then delivery
-    ts_resortTable(document.getElementById("sortdelivery"))
+    // Sort by default by project, then milestone, then priority
     ts_resortTable(document.getElementById("sortprio"))
     ts_resortTable(document.getElementById("sortmilestone"))
+    ts_resortTable(document.getElementById("sortproject"))
    </script>
   </div>
   <div class="container">
@@ -218,13 +204,24 @@
     &nbsp;
    </p>
    <h2>
-    Past milestones
+    Tracked series work
    </h2>
-   <ul class="breadcrumbs">
-    <li>
-     {{ pastbps|length }} completed blueprints
-    </li>
-   </ul>
+    <ul class="breadcrumbs">
+       <li>{{ activebps|length }} tracked active blueprints</li>
+    </ul>
+    <ul class="breadcrumbs">
+     <li>
+      Key
+     </li>
+     <li>
+      <img src="bmpNEEDSREVIEW.png"/>
+      Proposed change (needs review)
+     </li>
+     <li>
+      <img src="bmpMERGED.png"/>
+      Merged change
+     </li>
+    </ul>
    <table class="listing sortable" id="speclisting">
     <thead>
      <tr>
@@ -235,7 +232,7 @@
        </a>
       </th>
       <th>
-       <a class="sortheader" href="#" onclick="ts_resortTable(this); return false;">
+       <a class="sortheader" href="#" id="sortBproject" onclick="ts_resortTable(this); return false;">
         Project
         <img class="sortarrow" height="6" src="arrowDown" width="9"/>
        </a>
@@ -267,14 +264,15 @@
      </tr>
     </thead>
     <tbody>
-     {% for bp in pastbps %}{{ render_bp(bp) }}{% endfor %}
+{% for bp in activebps %}{{ render_bp(bp) }}{% endfor %}
     </tbody>
    </table>
    <script type="text/javascript">
-    // Sort by default by priority, then delivery
-    ts_resortTable(document.getElementById("sortBdelivery"))
+    // Sort by default by project, then milestone, then deliveryn then priority
     ts_resortTable(document.getElementById("sortBprio"))
+    ts_resortTable(document.getElementById("sortBdelivery"))
     ts_resortTable(document.getElementById("sortBmilestone"))
+    ts_resortTable(document.getElementById("sortBproject"))
    </script>
   </div>
   <script type="text/javascript">
