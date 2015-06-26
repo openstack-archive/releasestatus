@@ -27,9 +27,8 @@ import yaml
 class GerritReviews():
     def __init__(self, products):
         self.products = products
-        self.under_review = self._get_from_gerrit('AND', 'NOT', 'is:submitted')
-        self.submitted = self._get_from_gerrit('is:submitted')
-        self.merged = self._get_from_gerrit('is:merged')
+        self.under_review = self._get_from_gerrit('status:open')
+        self.merged = self._get_from_gerrit('status:merged')
 
     def _get_from_gerrit(self, *query):
         chg = {}
@@ -37,23 +36,40 @@ class GerritReviews():
         host = "review.openstack.org"
         port = "29418"
 
-        base_cmd = ['/usr/bin/ssh', '-p', port,
-                    host, 'gerrit', 'query', '--format=JSON',
-                    'branch:master', 'AND', 'NOT', 'age:%s' % age]
+        base_cmd = ['/usr/bin/ssh', '-p', port, host, 'gerrit', 'query',
+                    '--format=JSON', 'branch:master', 'AND', 'NOT',
+                    'age:%s' % age] + list(query)
 
-        cmd = base_cmd + list(query)
+        for product in self.products:
+            chg[product] = []
+            prod_cmd = base_cmd + ['AND', 'project:openstack/%s' % product]
+            sortkey = None
 
-        proc = subprocess.Popen(cmd, bufsize=1,
-                            stdin=None, stdout=subprocess.PIPE, stderr=None)
+            while True:
+                if sortkey:
+                    cmd = prod_cmd + ['AND', 'resume_sortkey:%s' % sortkey]
+                else:
+                    cmd = prod_cmd
 
-        for line in proc.stdout:
-            data = json.loads(line)
-            if "project" in data:
-                project = data['project'].split("/")[-1]
-                if project in self.products:
-                    if project not in chg:
-                        chg[project] = []
-                    chg[project].append(data)
+                proc = subprocess.Popen(cmd, bufsize=1, stdin=None,
+                                        stdout=subprocess.PIPE, stderr=None)
+
+                end_of_changes = False
+                for line in proc.stdout:
+                    data = json.loads(line)
+                    if 'rowCount' in data:
+                        if data['rowCount'] == 0:
+                            end_of_changes = True
+                            break
+                        else:
+                            break
+                    if data in chg[product]:
+                        end_of_changes = True
+                        break
+                    sortkey = data['sortKey']
+                    chg[product].append(data)
+                if end_of_changes:
+                    break
         return chg
 
 
@@ -117,9 +133,6 @@ class ExtendedBlueprint():
                           bp.whiteboard)
             self.reviews.extend(self.grab_links(matches,
                                           gerritreviews.merged, "MERGED"))
-            self.reviews.extend(self.grab_links(matches,
-                                                gerritreviews.submitted,
-                                                "WORKINPROGRESS"))
             self.reviews.extend(self.grab_links(matches,
                                                 gerritreviews.under_review,
                                                 "NEEDSREVIEW"))
